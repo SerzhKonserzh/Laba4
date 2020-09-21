@@ -1,0 +1,241 @@
+#include <iostream>
+#include <cstring>
+#include <string>
+using namespace std;
+int get_int();
+class table_games
+{
+	private:
+		int players_amount;
+		string name;
+public:
+	table_games()
+	{
+		this->players_amount = 0;
+		this->name = "None";
+	}
+	table_games(int amount,string namer) {
+		this->players_amount = amount;
+		this->name = namer;
+	}
+	void print()
+	{
+		cout << "Table game:\nAmount of players: " << players_amount << "\nName: " << name << endl;
+	}
+	void set_name(string name)
+	{
+		this->name = name;
+	}
+	void set_players(int amount)
+	{
+		this->players_amount = amount;
+	}
+	~table_games() {};
+};
+class card_games :private table_games
+{
+private:
+	int card_amount;
+	string card_type;
+public:
+	card_games():table_games()
+	{
+		this->card_amount = 0;
+		this->card_type = "None";
+	}
+	card_games(int card_amount, string card_type, int amount, string namer):table_games(amount,namer)
+	{
+		this->card_amount = card_amount;
+		this->card_type = card_type;
+	}
+	void print_card()
+	{
+		this->print();
+		cout << "Amount of cards: " << this->card_amount << "\nCard type: " << card_type << endl;
+	}
+	void set_type(string type)
+	{
+		this->card_type = type;
+	}
+	void set_amount(int amount)
+	{
+		this->card_amount = amount;
+	}
+	~card_games() {};
+};
+class field_games :private table_games
+{
+private:
+	int field_size;
+	string field_shape;
+public:
+	field_games() :table_games()
+	{
+		this->field_size = 0;
+		this->field_shape = "None";
+	}
+	field_games(int field_size, string field_shape, int amount, string namer) :table_games(amount, namer)
+	{
+		this->field_size = field_size;
+		this->field_shape = field_shape;
+	}
+	void print_field()
+	{
+		this->print();
+		cout << "Size of field: " << this->field_size << "\nShape of field: " << this->field_shape << endl;
+	}
+	void set_shape(string shape)
+	{
+		this->field_shape = shape;
+	}
+	void set_players(int size)
+	{
+		this->field_size = size;
+	}
+	~field_games() {};
+};
+class with_dice :private field_games
+{
+private:
+	int dice_amount;
+	string dice_type;
+public:
+	with_dice() :field_games()
+	{
+		this->dice_amount = 0;
+	this->dice_type = "None";
+	}
+	with_dice(int dice_amount, string dice_type, int field_size, string field_shape, int amount, string namer) :field_games(field_size, field_shape, amount, namer)
+	{
+		this->dice_amount = dice_amount;
+		this->dice_type = dice_type;
+	}
+	void print_dice_field()
+	{
+		this->print_field();
+		cout << "Amount of dice: " << this->dice_amount << "\nDice type: " << this->dice_type<<endl;
+	}
+	void set_dice_amount(int amount)
+	{
+		this->dice_amount = amount;
+	}
+	void set_dice_type(string type)
+	{
+		this->dice_type = type;
+	}
+	~with_dice() {};
+};
+class with_stakes :private card_games
+{
+private:
+	int base_stake;
+	int max_stake;
+public:
+	with_stakes() :card_games()
+	{
+		this->base_stake = 0;
+		this->max_stake = 0;
+	}
+	with_stakes(int base_stake, int max_stake, int card_amount, string card_type, int amount, string namer) :card_games(card_amount, card_type, amount, namer)
+	{
+		this->base_stake = base_stake;
+		this->max_stake = max_stake;
+	}
+	void print_stakes_card()
+	{
+		this->print_card();
+		cout << "Base stake: " << this->base_stake << "\nMax stake: " << this->max_stake << endl;
+	}
+	void set_base_stake(int stake)
+	{
+		this->base_stake = stake;
+	}
+	void set_players(int stake)
+	{
+		this->max_stake = stake;
+	}
+	~with_stakes() {};
+};
+class dice_poker :private with_dice, private with_stakes
+{private:
+	int combinations_amount;
+	int win_points;
+public:
+	dice_poker() :with_dice(), with_stakes()
+	{
+		this->combinations_amount = 0;
+		this->win_points = 0;
+	}
+	dice_poker(int combinations_amount, int win_points, int dice_amount, string dice_type, int field_size, string field_shape, int base_stake, int max_stake, int card_amount, string card_type, int amount, string namer) :with_stakes(base_stake, max_stake, card_amount, card_type, amount, namer), with_dice(dice_amount, dice_type, field_size, field_shape, amount, namer)
+	{
+		this->combinations_amount = combinations_amount;
+		this->win_points = win_points;
+	}
+	void print_end()
+	{
+		this->print_dice_field();
+		this->print_stakes_card();
+		cout << "Amount of combinations: " << this->combinations_amount << "\nWin points: " << this->win_points << endl;
+	}
+	void set_comb(int amount)
+	{
+		this->combinations_amount = amount;
+	}
+	void set_win_points(int points)
+	{
+		this->win_points = points;
+	}
+	~dice_poker() {};
+};
+int main()
+{
+	dice_poker poker1;
+	dice_poker poker2(2,20,5,"Cube",80,"Rectangle",10,15,32,"Plastic",8,"Yahtzee");
+	int combinations,win_points,dice_amount,field_size,base_stake,max_stake,card_amount,player_amount;
+	string dice_type, field_shape, card_type, name;
+	cout << "Enter name of the game: ";
+	cin >> name;
+	cout << "Enter amount of players: ";
+	player_amount = get_int();
+	cout << "Enter size of the field: ";
+	field_size = get_int();
+	cout << "Enter shape of the field: ";
+	cin >> field_shape;
+	cout << "Enter amount of cards: ";
+	card_amount = get_int();
+	cout << "Enter type of cards:";
+	cin >> card_type;
+	cout << "Enter amount of dices: ";
+	dice_amount = get_int();
+	cout << "Enter dice type: ";
+	cin >> dice_type;
+	cout << "Enter amount of combinations: ";
+	combinations = get_int();
+	cout << "Enter amount of points to win: ";
+	win_points = get_int();
+	cout << "Enter base stake: ";
+	base_stake = get_int();
+	cout << "Enter max stake: ";
+	max_stake = get_int();
+	dice_poker poker3(combinations, win_points, dice_amount, dice_type, field_size, field_shape, base_stake, max_stake, card_amount, card_type, player_amount, name);
+	poker1.print_end();
+	poker2.print_end();
+	poker3.print_end();
+	return 0;
+}
+int get_int()
+{
+	int temp;
+	while (1)
+	{
+		if (cin >> temp&&temp>0)
+			break;
+		else if (!cin||temp<=0)
+		{
+			cin.clear();
+			cin.get();
+			continue;
+		}
+	}
+	return temp;
+}
