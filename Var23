@@ -20,7 +20,7 @@ public:
 	}
 	void print()
 	{
-		cout << "Table game:\nAmount of players: " << players_amount << "\nName: " << name << endl;
+		cout << "Table game:\nName: " << name << "\nAmount of players: " << players_amount << endl;
 	}
 	void set_name(string name)
 	{
@@ -32,7 +32,7 @@ public:
 	}
 	~table_games() {};
 };
-class card_games :private table_games
+class card_games :public virtual table_games
 {
 private:
 	int card_amount;
@@ -50,7 +50,7 @@ public:
 	}
 	void print_card()
 	{
-		this->print();
+		/*this->print();*/
 		cout << "Amount of cards: " << this->card_amount << "\nCard type: " << card_type << endl;
 	}
 	void set_type(string type)
@@ -63,7 +63,7 @@ public:
 	}
 	~card_games() {};
 };
-class field_games :private table_games
+class field_games :public virtual table_games
 {
 private:
 	int field_size;
@@ -94,7 +94,7 @@ public:
 	}
 	~field_games() {};
 };
-class with_dice :private field_games
+class with_dice :public field_games
 {
 private:
 	int dice_amount;
@@ -113,7 +113,7 @@ public:
 	void print_dice_field()
 	{
 		this->print_field();
-		cout << "Amount of dice: " << this->dice_amount << "\nDice type: " << this->dice_type<<endl;
+		cout << "Amount of dices: " << this->dice_amount << "\nDice type: " << this->dice_type<<endl;
 	}
 	void set_dice_amount(int amount)
 	{
@@ -125,7 +125,7 @@ public:
 	}
 	~with_dice() {};
 };
-class with_stakes :private card_games
+class with_stakes :public card_games
 {
 private:
 	int base_stake;
@@ -156,7 +156,7 @@ public:
 	}
 	~with_stakes() {};
 };
-class dice_poker :private with_dice, private with_stakes
+class dice_poker :public with_dice, public with_stakes
 {private:
 	int combinations_amount;
 	int win_points;
@@ -190,7 +190,7 @@ public:
 int main()
 {
 	dice_poker poker1;
-	dice_poker poker2(2,20,5,"Cube",80,"Rectangle",10,15,32,"Plastic",8,"Yahtzee");
+	//dice_poker poker2(2,20,5,"Cube",80,"Rectangle",10,15,32,"Plastic",8,"Yahtzee");
 	int combinations,win_points,dice_amount,field_size,base_stake,max_stake,card_amount,player_amount;
 	string dice_type, field_shape, card_type, name;
 	cout << "Enter name of the game: ";
@@ -218,8 +218,11 @@ int main()
 	cout << "Enter max stake: ";
 	max_stake = get_int();
 	dice_poker poker3(combinations, win_points, dice_amount, dice_type, field_size, field_shape, base_stake, max_stake, card_amount, card_type, player_amount, name);
+	poker3.set_name(name);
+	poker3.set_amount(player_amount);
 	poker1.print_end();
-	poker2.print_end();
+	//poker2.print_end();
+	cout << "--------------------------------------" << endl;
 	poker3.print_end();
 	return 0;
 }
@@ -228,11 +231,15 @@ int get_int()
 	int temp;
 	while (1)
 	{
-		if (cin >> temp&&temp>0)
+		if (cin >> temp && temp > 0)
+		{
+			cin.ignore(32767, '\n');
 			break;
+		}
 		else if (!cin||temp<=0)
 		{
 			cin.clear();
+			cin.ignore(32767, '\n');
 			cin.get();
 			continue;
 		}
